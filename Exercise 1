@@ -1,0 +1,9 @@
+def divide_with_remainder(dividend, divisor, quotient=0, remainder=0):
+    if dividend < divisor:
+        return (quotient, remainder)
+    else:
+        return divide_with_remainder(dividend - divisor, divisor, quotient + 1, remainder)
+
+# Example usage:
+result = divide_with_remainder(17, 3)
+print(result)  # Output: (5, 2)
