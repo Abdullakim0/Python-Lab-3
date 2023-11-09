@@ -1,0 +1,32 @@
+from itertools import count
+from functools import reduce
+
+def pascals_triangle_generator():
+    row = [1]
+    while True:
+        yield row
+        row = [1] + [row[i] + row[i + 1] for i in range(len(row) - 1)] + [1]
+
+def transform_row(row):
+    sum_of_squares = sum(num**2 for num in row)
+    return (row, sum_of_squares)
+
+def is_prime(num):
+    if num < 2:
+        return False
+    for i in range(2, int(num**0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+def filter_rows(row):
+    return is_prime(sum(int(digit) for digit in str(sum(row))))
+
+def product_of_selected_sums(acc, row):
+    return acc * row[1]
+
+# Example usage:
+triangle = pascals_triangle_generator()
+selected_rows = filter(filter_rows, map(transform_row, triangle))
+result = reduce(product_of_selected_sums, selected_rows, 1)
+print(result)
