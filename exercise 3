@@ -1,0 +1,23 @@
+from datetime import datetime
+
+def financial_transactions_generator(csv_file, filter_func=None):
+    balance = 0
+    transactions = []
+    with open(csv_file, 'r') as f:
+        for line in f:
+            timestamp, amount = line.strip().split(',')
+            amount = int(amount)
+            if filter_func is None or filter_func(timestamp):
+                balance += amount
+                transactions.append(amount)
+                if len(transactions) > 10:
+                    transactions.pop(0)
+                average = sum(transactions) / len(transactions)
+                date = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S').strftime('%d-%m-%Y')
+                yield (date, balance, average)
+
+# Example usage:
+csv_file = 'financial_transactions.csv'
+october_2023_filter = lambda timestamp: '2023-10' in timestamp
+for result in financial_transactions_generator(csv_file, october_2023_filter):
+    print(result)
