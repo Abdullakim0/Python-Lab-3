@@ -1,0 +1,22 @@
+import ijson
+
+def load_as_stream(json_file):
+    with open(json_file, 'r', encoding='utf-8') as f:
+        books = ijson.items(f, 'books.item')
+        for book in books:
+            yield book
+
+def pagination_generator(data_generator, page_size):
+    page = []
+    for item in data_generator:
+        page.append(item)
+        if len(page) == page_size:
+            yield page
+            page = []
+
+# Example usage:
+json_file = 'data_zad2.json'
+adam_mickiewicz_books = filter(lambda book: book['author'] == 'Adam Mickiewicz' and book['edition'] == 'first', load_as_stream(json_file))
+pages = pagination_generator(adam_mickiewicz_books, 10)
+for page in pages:
+    print(page)
